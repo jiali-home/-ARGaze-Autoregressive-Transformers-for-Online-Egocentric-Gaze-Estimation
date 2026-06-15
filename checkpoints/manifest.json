@@ -1,0 +1,39 @@
+{
+  "name": "ARGaze core checkpoints",
+  "hf_repo": "<hf-org-or-user>/argaze",
+  "files": [
+    {
+      "dataset": "egteagaze",
+      "split": "official_test",
+      "config": "configs/Egtea/DINOV3_Full_Exp11_TwoCross_HeatmapBias_EfficientARHeatmap.yaml",
+      "model": "DINOv3_TwoCrossHeatmapBiasEfficientARHeatmapGaze",
+      "hf_path": "egteagaze/best_rollout.pyth",
+      "local_path": "egteagaze/best_rollout.pyth",
+      "sha256": "37f9d379333677e7c897eaab15fcee7766df9eea7f06f9520340eea3e16b801b",
+      "size": "376M",
+      "source_run": "egtea_full_exp11_two_cross_heatmapbias_efficient_coordloss"
+    },
+    {
+      "dataset": "ego4d",
+      "split": "official_test",
+      "config": "configs/Ego4d/DINOV3_Full_Exp11_TwoCross_HeatmapBias_EfficientARHeatmap.yaml",
+      "model": "DINOv3_TwoCrossHeatmapBiasEfficientARHeatmapGaze",
+      "hf_path": "ego4d/best_rollout.pyth",
+      "local_path": "ego4d/best_rollout.pyth",
+      "sha256": "8554c775ef2415509c0e5ac22e07545adfb89de8377b73dd82b6ee232c96799e",
+      "size": "376M",
+      "source_run": "ego4d_full_exp11_two_cross_heatmapbias_efficient_coordloss"
+    },
+    {
+      "dataset": "egoexo4d",
+      "split": "iid",
+      "config": "configs/Egoexo4d/DINOV3_Full_Exp11_TwoCross_HeatmapBias_EfficientARHeatmap.yaml",
+      "model": "DINOv3_TwoCrossHeatmapBiasEfficientARHeatmapGaze",
+      "hf_path": "egoexo4d/iid/best_rollout.pyth",
+      "local_path": "egoexo4d/iid/best_rollout.pyth",
+      "sha256": "144213594b9143efc5e8fe7f33c343a53fe4b4a90fe47d6953334bf319259e7f",
+      "size": "376M",
+      "source_run": "egoexo4d_full_exp11_two_cross_heatmapbias_efficient_coordloss"
+    }
+  ]
+}

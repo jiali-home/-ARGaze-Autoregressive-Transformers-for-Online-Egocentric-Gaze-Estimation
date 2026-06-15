@@ -1,0 +1,85 @@
+# Ego4D Full Experiment 11: Two-Cross Heatmap-Biased Efficient AR Heatmap Gaze
+# Structure: Self-Attention (Query Only), Cross-Attention (History Image with Bias), Cross-Attention (Current Image)
+# Historical heatmaps bias only the history cross-attention block; current frame tokens are read separately.
+
+TRAIN:
+  ENABLE: True
+  DATASET: ego4dgaze
+  BATCH_SIZE: 8
+  EVAL_PERIOD: 1
+  CHECKPOINT_PERIOD: 1
+  AUTO_RESUME: True
+  CHECKPOINT_BEST_METRIC: l2
+
+DATA:
+  PATH_PREFIX: '/path/to/ego4d/v2'
+  PATH_TO_DATA_DIR: 'data/splits/ego4d/train_ego4d_gaze_stride8.csv'
+  PATH_TO_TEST_DIR: 'data/splits/ego4d/test_ego4d_gaze_stride8.csv'
+  PATH_TO_VAL_DIR: 'data/splits/ego4d/test_ego4d_gaze_stride8.csv'
+
+  FRAMES_DIR: '/path/to/ego4d/v2/frames_stride8_224'
+  FRAME_EXT: 'jpg'
+  NUM_FRAMES: 8
+  SAMPLING_RATE: 8
+  TRAIN_JITTER_SCALES: [256, 320]
+  TRAIN_CROP_SIZE: 224
+  TEST_CROP_SIZE: 224
+  INPUT_CHANNEL_NUM: [3]
+  TARGET_FPS: 30
+  GAUSSIAN_KERNEL: 19
+
+MODEL:
+  ARCH: dinov3
+  MODEL_NAME: DINOv3_TwoCrossHeatmapBiasEfficientARHeatmapGaze
+  NUM_CLASSES: 1
+  LOSS_FUNC: kldiv
+  DROPOUT_RATE: 0.1
+  CAUSAL: False
+
+  DINOV3_MODEL_NAME: "facebook/dinov3-vits16-pretrain-lvd1689m"
+  FREEZE_ENCODER: True
+  UNFREEZE_LAST_K_LAYERS: 12
+  USE_MULTISCALE_FEATURES: True
+  MULTISCALE_LAYERS: [-3, -2, -1]
+
+  USE_SUBPATCH: True
+
+  HISTORY_TYPE: "image"
+  HISTORY_LENGTH: 5
+  HEATMAP_SIZE: 96
+  HEATMAP_BIAS_WEIGHT: 1.0
+  HEATMAP_BIAS_EPS: 1e-6
+  HEATMAP_BIAS_NORMALIZE: "softmax"
+  NUM_DECODER_LAYERS: 3
+  NUM_ATTENTION_HEADS: 8
+
+  COORD_LOSS_WEIGHT: 2.0
+  COORD_LOSS_TAU: 0.5
+  COORD_LOSS_TYPE: "smooth_l1"
+
+SOLVER:
+  BASE_LR: 0.0001
+  LR_POLICY: cosine
+  MAX_EPOCH: 30
+  WARMUP_EPOCHS: 2.0
+  WARMUP_START_LR: 1e-06
+  OPTIMIZING_METHOD: adamw
+
+TEST:
+  ENABLE: True
+  DATASET: ego4dgaze
+  BATCH_SIZE: 8
+
+DATA_LOADER:
+  NUM_WORKERS: 8
+  PIN_MEMORY: True
+
+WANDB:
+  ENABLE: False
+  PROJECT: "ARGaze"
+  ENTITY: ""
+  RUN_NAME: "ego4d_full_exp11_two_cross_heatmapbias_efficient_h5_hm96_u12_coord2p0"
+  MODE: disabled
+
+NUM_GPUS: 1
+OUTPUT_DIR: ./output/ego4d_full_exp11_two_cross_heatmapbias_efficient_coordloss

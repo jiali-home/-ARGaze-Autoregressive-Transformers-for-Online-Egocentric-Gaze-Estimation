@@ -1,0 +1,120 @@
+# EgoExo4D Full Experiment 11: Two-Cross Heatmap-Biased Efficient AR Heatmap Gaze
+# Structure: Self-Attention (Query Only), Cross-Attention (History Image with Bias), Cross-Attention (Current Image)
+# Historical heatmaps bias only the history cross-attention block; current frame tokens are read separately.
+
+TRAIN:
+  ENABLE: True
+  DATASET: Egoexo4dgaze
+  BATCH_SIZE: 16
+  EVAL_PERIOD: 1
+  CHECKPOINT_PERIOD: 1
+  AUTO_RESUME: True
+  CHECKPOINT_EPOCH_RESET: True
+  CHECKPOINT_KEEP_LAST_N: 3
+  CHECKPOINT_BEST_METRIC: f1
+
+DATA:
+  PATH_PREFIX: '/path/to/egoexo4d'
+  FRAMES_DIR: '/path/to/egoexo4d/takes_frames'
+  VIDEO_ROOT_DIR: '/path/to/egoexo4d'
+  GAZE_DATA_DIR: '/path/to/egoexo4d/gaze_data'
+  SPLIT_ASSIGNMENTS_CSV: 'data/egoexo4d_splits/split_assignments.csv'
+
+  FRAME_EXT: 'jpg'
+  NUM_FRAMES: 8
+  SAMPLING_RATE: 8
+  TRAIN_JITTER_SCALES: [256, 320]
+  TRAIN_CROP_SIZE: 224
+  TEST_CROP_SIZE: 224
+  INPUT_CHANNEL_NUM: [3]
+  TARGET_FPS: 8
+  USE_OFFSET_SAMPLING: False
+  GAUSSIAN_KERNEL: 19
+
+  HEATMAP_SIGMA: -1.0
+  WINDOW_STRIDE: 8
+  FILL_NAN_CENTER: True
+  INTERPOLATE_NAN: True
+  SKIP_FRAME_EXISTS_CHECK: True
+
+  SKIP_INDEX_CACHE_LOAD: False
+  SKIP_TAKE_CACHE_LOAD: False
+  SKIP_MISSING_FRAMES_DIR: True
+
+  SUBSAMPLE_TRAIN_FRACTION: 1.0
+  SUBSAMPLE_VAL_FRACTION: 1.0
+  VISUALIZE: False
+
+MODEL:
+  ARCH: dinov3
+  MODEL_NAME: DINOv3_TwoCrossHeatmapBiasEfficientARHeatmapGaze
+  NUM_CLASSES: 1
+  LOSS_FUNC: kldiv
+  DROPOUT_RATE: 0.1
+  CAUSAL: False
+  DECODE_LAST: False
+
+  DINOV3_MODEL_NAME: "facebook/dinov3-vits16-pretrain-lvd1689m"
+  FREEZE_ENCODER: True
+  UNFREEZE_LAST_K_LAYERS: 12
+
+  USE_MULTISCALE_FEATURES: True
+  MULTISCALE_LAYERS: [-3, -2, -1]
+
+  HISTORY_TYPE: "image"
+  HISTORY_LENGTH: 5
+  HEATMAP_SIZE: 96
+  HEATMAP_BIAS_WEIGHT: 1.0
+  HEATMAP_BIAS_EPS: 1e-6
+  HEATMAP_BIAS_NORMALIZE: "softmax"
+  NUM_DECODER_LAYERS: 3
+  NUM_ATTENTION_HEADS: 8
+  DIM_FEEDFORWARD: 1536
+
+  COORD_LOSS_WEIGHT: 2.0
+  COORD_LOSS_TAU: 0.5
+  COORD_LOSS_TYPE: "smooth_l1"
+
+SOLVER:
+  BASE_LR: 0.0001
+  LR_POLICY: cosine
+  MAX_EPOCH: 15
+  MOMENTUM: 0.9
+  WEIGHT_DECAY: 0.05
+  WARMUP_EPOCHS: 5.0
+  WARMUP_START_LR: 0.00001
+  COSINE_END_LR: 1e-6
+  OPTIMIZING_METHOD: adamw
+  CLIP_GRAD_L2NORM: 1.0
+  ZERO_WD_1D_PARAM: True
+  BASE_LR_SCALE_NUM_SHARDS: True
+
+TEST:
+  ENABLE: True
+  DATASET: Egoexo4dgaze
+  BATCH_SIZE: 16
+  NUM_SPATIAL_CROPS: 1
+  NUM_ENSEMBLE_VIEWS: 1
+
+DATA_LOADER:
+  NUM_WORKERS: 8
+  PIN_MEMORY: True
+
+TENSORBOARD:
+  ENABLE: True
+
+WANDB:
+  ENABLE: False
+  PROJECT: "ARGaze"
+  ENTITY: ""
+  RUN_NAME: "egoexo4d_full_exp11_two_cross_heatmapbias_efficient_h5_hm96_u12_coord2p0"
+  MODE: disabled
+  LOG_SAMPLES_EVERY_TRAIN: 400
+  LOG_SAMPLES_EVERY_VAL: 100
+  NUM_SAMPLE_FRAMES: 3
+  LOG_VAL_SAMPLES: True
+
+NUM_GPUS: 1
+NUM_SHARDS: 1
+RNG_SEED: 0
+OUTPUT_DIR: ./output/egoexo4d_full_exp11_two_cross_heatmapbias_efficient_coordloss
