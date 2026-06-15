@@ -1,6 +1,6 @@
 {
   "name": "ARGaze core checkpoints",
-  "hf_repo": "<hf-org-or-user>/argaze",
+  "hf_repo": "JiaLi0108/argaze",
   "files": [
     {
       "dataset": "egteagaze",

@@ -19,7 +19,7 @@ def main():
     args = parser.parse_args()
 
     manifest = json.loads(Path(args.manifest).read_text())
-    repo_id = args.repo or manifest.get("hf_repo") or "<hf-org-or-user>/argaze"
+    repo_id = args.repo or manifest.get("hf_repo") or "JiaLi0108/argaze"
     output_root = Path(args.output)
 
     if args.dry_run:

@@ -35,7 +35,7 @@ After the Hugging Face model repository is published, download checkpoints with:
 
 ```bash
 python scripts/download_checkpoints.py \
-  --repo <hf-org-or-user>/argaze \
+  --repo JiaLi0108/argaze \
   --output checkpoints
 ```
 
